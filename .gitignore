@@ -5,6 +5,8 @@
 
 # dotenv files
 .env
+.dotnet/
+.dotnet-cli/
 
 # User-specific files
 *.rsuser
@@ -284,6 +286,10 @@ FakesAssemblies/
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
 node_modules/
+
+# SvelteKit / Vite generated output
+src/ScoutHub.Client/.svelte-kit/
+src/ScoutHub.Client/build/
 
 # Visual Studio 6 build log
 *.plg
