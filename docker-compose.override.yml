@@ -1,0 +1,22 @@
+services:
+  api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5251:8080"
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src/ScoutHub.Api
+        - action: rebuild
+          path: ./src/ScoutHub.Data
+
+  client:
+    environment:
+      - NODE_ENV=development
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src/ScoutHub.Client
+          ignore:
+            - node_modules/

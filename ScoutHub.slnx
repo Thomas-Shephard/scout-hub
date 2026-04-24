@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ScoutHub.Api/ScoutHub.Api.csproj" />
+    <Project Path="src/ScoutHub.Client/ScoutHub.Client.esproj" />
+    <Project Path="src/ScoutHub.Data/ScoutHub.Data.csproj" />
+    <Project Path="src/ScoutHub.Migrations/ScoutHub.Migrations.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ScoutHub.Api.Tests/ScoutHub.Api.Tests.csproj" />
+    <Project Path="tests/ScoutHub.Data.Tests/ScoutHub.Data.Tests.csproj" />
+  </Folder>
+</Solution>
