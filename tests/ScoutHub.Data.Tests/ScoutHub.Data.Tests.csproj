@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ScoutHub.Data.Tests</RootNamespace>
+    <AssemblyName>ScoutHub.Data.Tests</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ScoutHub.Data\ScoutHub.Data.csproj" />
+  </ItemGroup>
+
+</Project>
