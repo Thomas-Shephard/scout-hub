@@ -1,0 +1,20 @@
+# Normalize text files to LF on checkout and in the index.
+* text=auto eol=lf
+
+# C# files
+*.cs diff=csharp
+
+# Documentation and config
+*.md           text
+*.json         text
+.editorconfig  text
+.gitignore     text
+.gitattributes text
+
+# Binary assets
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
