@@ -1,0 +1,58 @@
+version: 2
+updates:
+  - package-ecosystem: "dotnet-sdk"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+    assignees:
+      - "Thomas-Shephard"
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+    assignees:
+      - "Thomas-Shephard"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+    assignees:
+      - "Thomas-Shephard"
+  - package-ecosystem: "npm"
+    directory: "/src/ScoutHub.Client"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+    assignees:
+      - "Thomas-Shephard"
+  - package-ecosystem: "docker"
+    directory: "/docker/backend"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+    assignees:
+      - "Thomas-Shephard"
+  - package-ecosystem: "docker"
+    directory: "/docker/frontend"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+    assignees:
+      - "Thomas-Shephard"
+  - package-ecosystem: "docker"
+    directory: "/docker/migrations"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+    assignees:
+      - "Thomas-Shephard"
