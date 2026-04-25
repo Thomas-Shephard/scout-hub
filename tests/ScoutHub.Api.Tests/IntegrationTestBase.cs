@@ -29,7 +29,7 @@ public abstract class IntegrationTestBase
         }
     }
 
-    protected WebApplicationFactory<Program> CreateFactory(
+    protected static WebApplicationFactory<Program> CreateFactory(
         string environment = "Production",
         string[]? allowedOrigins = null,
         Action<IWebHostBuilder>? configure = null)

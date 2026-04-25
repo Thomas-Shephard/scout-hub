@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Hosting;
@@ -73,6 +74,7 @@ public sealed class ExceptionHandlingIntegrationTests : IntegrationTestBase
 public sealed class TestExceptionsController : ControllerBase
 {
     [HttpGet("throw")]
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "ASP.NET Core controller actions must remain instance methods for routing.")]
     public IActionResult Throw()
     {
         throw new InvalidOperationException("Test exception");
