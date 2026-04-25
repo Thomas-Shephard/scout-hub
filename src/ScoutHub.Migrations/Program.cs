@@ -16,10 +16,10 @@ var result = upgrader.PerformUpgrade();
 
 if (!result.Successful)
 {
-    Console.Error.WriteLine("Migration failed:");
-    Console.Error.WriteLine(result.Error.ToString());
+    await Console.Error.WriteLineAsync("Migration failed:");
+    await Console.Error.WriteLineAsync(result.Error.ToString());
     return -1;
 }
 
-Console.WriteLine("Migrations completed successfully.");
+await Console.Out.WriteLineAsync("Migrations completed successfully.");
 return 0;
