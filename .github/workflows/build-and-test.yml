@@ -1,0 +1,85 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    env:
+      HAS_SONAR_TOKEN: ${{ secrets.SONAR_TOKEN != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          cache: true
+          cache-dependency-path: |
+            ScoutHub.slnx
+            .config/dotnet-tools.json
+            Directory.Build.props
+            Directory.Packages.props
+            tests/Directory.Build.props
+            **/*.csproj
+            **/*.esproj
+      - name: Set up JDK 17
+        if: env.HAS_SONAR_TOKEN == 'true'
+        uses: actions/setup-java@v5
+        with:
+          java-version: "17"
+          distribution: "temurin"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: src/ScoutHub.Client/package-lock.json
+      - name: Install Frontend Dependencies
+        run: npm ci
+        working-directory: src/ScoutHub.Client
+      - name: Lint Frontend
+        run: npm run lint
+        working-directory: src/ScoutHub.Client
+      - name: Check Frontend
+        run: npm run check
+        working-directory: src/ScoutHub.Client
+      - name: Build Frontend
+        run: npm run build
+        working-directory: src/ScoutHub.Client
+      - name: Restore .NET Tools
+        run: dotnet tool restore
+      - name: Run SonarScanner Begin
+        if: env.HAS_SONAR_TOKEN == 'true'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          dotnet sonarscanner begin
+          /k:"${{ vars.SONAR_PROJECT_KEY }}"
+          /o:"${{ vars.SONAR_ORGANIZATION }}"
+          /d:sonar.host.url="${{ vars.SONAR_HOST_URL }}"
+          /d:sonar.cs.opencover.reportsPaths="coverage/**/coverage.opencover.xml"
+      - name: Restore .NET Dependencies
+        run: dotnet restore ScoutHub.slnx
+      - name: Build .NET Solution
+        run: dotnet build ScoutHub.slnx --configuration Release --no-restore
+      - name: Test .NET Solution
+        run: >
+          dotnet test ScoutHub.slnx --configuration Release --no-build
+          --settings .runsettings
+          --results-directory ./coverage
+      - name: Run SonarScanner End
+        if: ${{ always() && env.HAS_SONAR_TOKEN == 'true' }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet sonarscanner end
+      - name: Check Coverage
+        run: dotnet coveragechecker --format Cobertura --glob-patterns 'coverage/**/coverage.cobertura.xml' --line-threshold 100 --branch-threshold 100
