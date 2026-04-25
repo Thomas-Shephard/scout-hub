@@ -41,7 +41,7 @@ app.UseCors("DefaultPolicy");
 app.MapControllers();
 app.MapHealthChecks("/health");
 
-app.Run();
+await app.RunAsync();
 return;
 
 static string[]? ResolveAllowedOrigins(IConfigurationRoot configurationRoot)
