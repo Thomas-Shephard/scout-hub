@@ -1,5 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
+IConfigurationRoot configurationRoot = builder.Configuration;
+var allowedOrigins = ResolveAllowedOrigins(configurationRoot)
+    ?? throw new InvalidOperationException("Section 'AllowedOrigins' not found.");
+
 builder.Host.UseSerilog((context, loggerConfiguration) =>
 {
     loggerConfiguration.ReadFrom.Configuration(context.Configuration);
@@ -12,8 +16,6 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("DefaultPolicy", policy =>
     {
-        var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
-            ?? throw new InvalidOperationException("Section 'AllowedOrigins' not found.");
         policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod();
@@ -40,3 +42,22 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+return;
+
+static string[]? ResolveAllowedOrigins(IConfigurationRoot configurationRoot)
+{
+    foreach (var provider in configurationRoot.Providers.Reverse())
+    {
+        if (provider.TryGet("AllowedOrigins", out var sectionValue) && sectionValue == string.Empty)
+        {
+            return [];
+        }
+
+        if (provider.GetChildKeys([], "AllowedOrigins").Any())
+        {
+            return configurationRoot.GetSection("AllowedOrigins").Get<string[]>();
+        }
+    }
+
+    return null;
+}

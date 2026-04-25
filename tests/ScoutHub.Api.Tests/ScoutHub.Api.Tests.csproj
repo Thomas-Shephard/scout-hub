@@ -8,6 +8,11 @@
   <ItemGroup>
     <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Npgsql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="NUnit.Framework.NonParallelizableAttribute" />
   </ItemGroup>
 
   <ItemGroup>

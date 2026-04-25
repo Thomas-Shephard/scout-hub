@@ -1,35 +1,57 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Testcontainers.PostgreSql;
 
 namespace ScoutHub.Api.Tests;
 
 public abstract class IntegrationTestBase
 {
-    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder("postgres:18-alpine")
-        .Build();
+    private WebApplicationFactory<Program>? _factory;
+    private HttpClient? _client;
 
-    protected WebApplicationFactory<Program> Factory { get; private set; }
-    protected HttpClient Client { get; private set; }
-    protected string ConnectionString => _dbContainer.GetConnectionString();
+    protected WebApplicationFactory<Program> Factory => _factory ??= CreateFactory();
+    protected HttpClient Client => _client ??= Factory.CreateClient();
+    protected static string ConnectionString => IntegrationTestDatabase.ConnectionString;
 
-    [OneTimeSetUp]
-    public async Task OneTimeSetup()
+    [SetUp]
+    public Task SetUp()
     {
-        await _dbContainer.StartAsync();
-
-        Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-        {
-            builder.UseSetting("ConnectionStrings:DefaultConnection", ConnectionString);
-        });
-
-        Client = Factory.CreateClient();
+        return IntegrationTestDatabase.ResetAsync();
     }
 
     [OneTimeTearDown]
     public async Task OneTimeTearDown()
     {
-        Client.Dispose();
-        await Factory.DisposeAsync();
-        await _dbContainer.DisposeAsync();
+        _client?.Dispose();
+
+        if (_factory is not null)
+        {
+            await _factory.DisposeAsync();
+        }
+    }
+
+    protected WebApplicationFactory<Program> CreateFactory(
+        string environment = "Production",
+        string[]? allowedOrigins = null,
+        Action<IWebHostBuilder>? configure = null)
+    {
+        return new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.UseEnvironment(environment);
+            builder.UseSetting("ConnectionStrings:DefaultConnection", ConnectionString);
+
+            if (allowedOrigins is [])
+            {
+                builder.UseSetting("AllowedOrigins", string.Empty);
+            }
+            else if (allowedOrigins is not null)
+            {
+                for (var index = 0; index < allowedOrigins.Length; index++)
+                {
+                    builder.UseSetting($"AllowedOrigins:{index}", allowedOrigins[index]);
+                }
+            }
+
+            configure?.Invoke(builder);
+        });
     }
 }
