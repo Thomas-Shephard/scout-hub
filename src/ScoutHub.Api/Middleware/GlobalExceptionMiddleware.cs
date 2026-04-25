@@ -1,5 +1,11 @@
 namespace ScoutHub.Api.Middleware;
 
+/// <summary>
+/// Catches unhandled exceptions, logs them, and returns a problem details response.
+/// </summary>
+/// <param name="next">The next middleware in the request pipeline.</param>
+/// <param name="logger">The logger used to record unhandled exceptions.</param>
+/// <param name="env">The hosting environment used to control error detail output.</param>
 public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger, IWebHostEnvironment env)
 {
     private static readonly JsonSerializerOptions SerializerOptions = new()
@@ -7,6 +13,10 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
+    /// <summary>
+    /// Processes the current request and converts unhandled exceptions into problem details responses.
+    /// </summary>
+    /// <param name="context">The current HTTP request context.</param>
     public async Task InvokeAsync(HttpContext context)
     {
         try
