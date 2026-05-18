@@ -12,7 +12,7 @@
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageVersion Include="AspNetCore.HealthChecks.Npgsql" Version="9.0.0" />
     <!-- Data -->
-    <PackageVersion Include="Dapper" Version="2.1.72" />
+    <PackageVersion Include="Dapper" Version="2.1.79" />
     <!-- Migrations -->
     <PackageVersion Include="dbup-postgresql" Version="7.0.1" />
     <!-- Tests -->
